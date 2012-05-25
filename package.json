@@ -10,6 +10,7 @@
 	"connect-redis": ">= 1.0.0",
 	"express": "2.5.9",
 	"redis": "0.7.2",
-	"jqtpl": "1.1.0"
+	"jqtpl": "1.1.0",
+	"mime": "1.2.5"
   }
 }

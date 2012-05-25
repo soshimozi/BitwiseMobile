@@ -1,16 +1,68 @@
 <!DOCTYPE html>
 <html>
 	<head> 
-	<title>jQuery Mobile Application</title>
-	 <link rel="stylesheet" href="https://bitwisemobile.com/stylesheets/css/jquery.mobile-1.1.0.min.css" />
-	<script src="https://bitwisemobile.com/scripts/js/jquery-1.6.4.min.js"></script> 
-	<script src="https://bitwisemobile.com/scripts/js/jquery.mobile-1.1.0.min.js"></script>
+		<title>jQuery Mobile Application</title>
+		<link rel="stylesheet" href="https://bitwisemobile.com/files/css/jquery.mobile-1.1.0.min.css" />
+		<script src="https://bitwisemobile.com/files/js/jquery-1.6.4.min.js"></script> 
+		<script src="https://bitwisemobile.com/files/js/jquery.mobile-1.1.0.min.js"></script>		
+		<script src="https://bitwisemobile.com/files/js/json2.js"></script>
 	</head> 
 	<body>
+		<script type="text/javascript">
+		</script>
+		
+		<!-- Begin: Main view -->
+		<section id="main" data-role="page">
+			<header data-role="header"><h1>GIS Message Board</h2></header>
+			
+			<nav data-role="navbar">
+				<ul>
+					<li><a href="#">Places</a></li>
+					<li><a href="#" class="ui-btn-active">All</a></li>
+					<li><a data-icon="plus" data-iconpos="left" href="#">Add Place</a></li>
+				</ul>
+				<div style="float:right;margin-right:5px;"> 
+					<div data-role="fieldcontain">
+						<fieldset data-role="controlgroup" data-type="horizontal">
+							<input type="radio" name="radio-sort" id="radio-recent">
+							<label for="radio-recent">Recent</label>
+							<input type="radio" name="radio-sort" id="radio-top-rated">
+							<label for="radio-top-rated">Top Rated</label>
+						</fieldset>
+					</div>
+				</div>
+			</nav>
+			<div class="content" data-role="content">
+				<ul data-role="listview">
+					<li>
+						<a href="#placeDetail">sandman, 1:16pm 3/19/12</a><a href="#place">@Pond</a>
+						<img style="height:32px;width:32px;border:1px solid black;position:relative;left:50%" src="" />
+						<div style="clear:both;"></div>
+						<span style="margin-left:15px;">Some text comments</span>
+					</li>
+					<li>
+						<a href="#placeDetail">sandman, 4:17pm 3/12/12</a><a href="#place">@Bench</a>
+						<span style="margin-left:15px;">i have also seen the one eyed pirate pigeon.</span>
+					</li>
+					<li>
+						<a href="#placeDetail">sandman, 4:14pm 3/1/12</a><a href="#place">@Shack</a>
+						<img style="height:32px;width:32px;border:1px solid black;position:relative;left:50%" src="" />
+						<div style="clear:both;"></div>
+						<span style="margin-left:15px;">love shack baby!!!</span>
+					</li>
+					<li>
+						<a href="#placeDetail">sandman, 5:17pm 3/1/12</a><a href="#place">@Shack</a>
+						<span style="margin-left:15px;">i have seen the one eyed pirate pigeon</span>  
+					</li>  
+				</ul>
+			</div>
+			<footer data-role="footer"><h1>BitwiseMobile</h1></footer>
+		</section>
+		
 		<section id="page1" data-role="page">
 			<header data-role="header"><h1>jQuery Mobile</h1></header>
 			<div class="content" data-role="content">
-				<p>First page!</p>
+				<h3>Button Icons</h3>
 			</div>
 			<footer data-role="footer"><h1>O'Reilly</h1></footer>
 		</section>
