@@ -1,0 +1,16 @@
+{
+  "name": "bitwise-server",
+  "version": "0.0.1",
+  "description": "Bitwise Mobile",
+  "author": {
+    "name": "Scott McCain",
+    "email": "scott.mccain@gmail.com"
+  },
+  "dependencies": {
+	"connect-redis": ">= 1.0.0",
+	"express": "2.5.9",
+	"redis": "0.7.2",
+	"mongoose": "2.6.5",
+	"jQuery": "1.7.2"
+  }
+}
