@@ -1,4 +1,5 @@
 var $ = require('jQuery');
+var mongoose = require("mongoose");
 
 var helper = require('./request_helpers');
 var schemas = require('../schemas');

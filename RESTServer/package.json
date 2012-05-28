@@ -1,9 +1,9 @@
 {
-  "name": "bitwise-server",
+  "name": "bitwise-rest-server",
   "version": "0.0.1",
-  "description": "Bitwise Mobile",
+  "description": "Rest Server",
   "author": {
-    "name": "Scott McCain",
+    "name": "BitwiseMobile",
     "email": "scott.mccain@gmail.com"
   },
   "dependencies": {
@@ -11,6 +11,7 @@
 	"express": "2.5.9",
 	"redis": "0.7.2",
 	"mongoose": "2.6.5",
-	"jQuery": "1.7.2"
+	"jQuery": "1.7.2",
+	"JSON": "1.0.0"	
   }
 }
