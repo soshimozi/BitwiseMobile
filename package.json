@@ -1,7 +1,7 @@
 {
-  "name": "bitwise-server",
+  "name": "bitwise-rest-server",
   "version": "0.0.1",
-  "description": "Bitwise Mobile",
+  "description": "Rest Server",
   "author": {
     "name": "Scott McCain",
     "email": "scott.mccain@gmail.com"
@@ -12,6 +12,7 @@
 	"redis": "0.7.2",
 	"jqtpl": "1.1.0",
 	"mime": "1.2.5",
-	"mongoose": "2.6.5"
+	"mongoose": "2.6.5",
+	"JSON": "1.0.0"
   }
 }

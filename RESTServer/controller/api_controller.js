@@ -14,15 +14,20 @@ exports.initialize = function() {
 
 exports.handleGet = function(req, res) {
 
-	console.log(req);
+	//console.log(req);
 
 	if( req.params.command == 'closest_threads' ) { 
+		
+		// convert range to radian distance measurement
+		var range = parseFloat(req.query.range) / 1000 / 111.2;
+		
+		console.log("finding distance: " + range);
 		
 		ThreadModel.find(
 				{  
 					loc : { 
 						$near : [parseFloat(req.query.lon), parseFloat(req.query.lat)], 
-						$maxDistance: parseFloat(req.query.range) 
+						$maxDistance: range 
 					} 
 				}, 
 				function(err, docs) {
@@ -46,12 +51,14 @@ exports.handleGet = function(req, res) {
 		  var thread = new ThreadModel;
 		  $.extend(thread, req.query);
 		  
+		  var range = 25 / 1000 / 111.2;
+		  
 		  // see if a thread exists in that area with that name first
 		  ThreadModel.find(
 				{  
 					loc : { 
 						$near : [parseFloat(req.query.loc.lon), parseFloat(req.query.loc.lat)], 
-						$maxDistance: 25 
+						$maxDistance: range 
 					},
 				
 					name : req.query.name

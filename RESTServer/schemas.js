@@ -7,6 +7,7 @@ var PostSchema = new Schema({
     thread_id  	: ObjectId
   , text     	: String 
   , username	: String
+  , image_data	: String
   , timestamp  	: Date
   , upvotes		: Number
   , downvotes   : Number
