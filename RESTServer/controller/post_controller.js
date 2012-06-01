@@ -12,19 +12,33 @@ exports.initialize = function() {
 
 exports.handleGet = function(req, res) { 
 	if( typeof req.params.id !== 'undefined') {
-		Model.findById(req.params.id, function(err, doc) {
-			res.send(doc);
-		});
+		
+		try {
+			Model.findById(req.params.id, function(err, doc) {
+				res.send(doc);
+			});
+		}
+		catch(ex) {
+			console.log(ex);
+			helper.sendError(req, res, ex);
+		}		
 		
 	} else {
-		Model.findAll(function(err, docs) {
-			var elements = Array();
-			for(docIndex in docs) {
-				elements.push(docs[docIndex]);
-			}
-			
-			res.send(elements);
-		});
+		
+		try {
+			Model.findAll(function(err, docs) {
+				var elements = Array();
+				for(docIndex in docs) {
+					elements.push(docs[docIndex]);
+				}
+				
+				res.send(elements);
+			});
+		}
+		catch(ex) {
+			console.log(ex);
+			helper.sendError(req, res, ex);
+		}		
 	}	
 }
 
@@ -39,15 +53,21 @@ exports.handlePost = function(req, res) {
 	  
 	  $.extend(post, req.body);
 	  
-	  post.save(function(err) {
-		  
-		  if( err ) {
-			  console.log(err);
-			  res.send('Server Error', {'Content-Type' : 'text/html'}, 500);
-		  } else {
-			  res.send(post, {'Content-Type' : 'Application/json'}, 201);
-		  }
-	  });
+	  try {
+		  post.save(function(err) {
+			  
+			  if( err ) {
+				  console.log(err);
+				  res.send('Server Error', {'Content-Type' : 'text/html'}, 500);
+			  } else {
+				  res.send(post, {'Content-Type' : 'Application/json'}, 201);
+			  }
+		  });
+	}
+	catch(ex) {
+		console.log(ex);
+		helper.sendError(req, res, ex);
+	}	  
 }
 
 exports.handleBehavior = function(req, res) {
@@ -55,18 +75,26 @@ exports.handleBehavior = function(req, res) {
 		&& Model.hasBehavior(req.params.behavior)
 		&& typeof(Model.Behaviors[req.params.behavior]) === 'function') {
 		
-		Model.findById(req.params.id, function(err, doc) {
-				
-				if( err ) {
-					console.log(err);
-					res.send('Server Error', { 'Content-Type': 'text/html' }, 500);
-				} else if( doc ) {
-					Model.Behaviors[req.params.behavior](req, res, doc);
-				} else {
-					res.send('Post not found', { 'Content-Type': 'text/html' }, 404);
-				}
-				
-			});
+		try {
+		
+			Model.findById(req.params.id, function(err, doc) {
+					
+					if( err ) {
+						console.log(err);
+						res.send('Server Error', { 'Content-Type': 'text/html' }, 500);
+					} else if( doc ) {
+						Model.Behaviors[req.params.behavior](req, res, doc);
+					} else {
+						res.send('Post not found', { 'Content-Type': 'text/html' }, 404);
+					}
+					
+				});
+			
+		}
+		catch(ex) {
+			console.log(ex);
+			helper.sendError(req, res, ex);
+		}		
 			
 	} else {
 		res.send('Behavior not found: ' + req.params.behavior, {'Content-Type' : 'text/html'}, 404 );
