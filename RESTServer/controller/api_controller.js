@@ -17,8 +17,17 @@ exports.handleGet = function(req, res) {
 	if( req.params.command == 'all_posts' ) { 
 		
 		// convert range to radian distance measurement
-		var range = parseFloat(req.query.range) / 1000 / 11.2;
+		var range = parseFloat(req.query.range) / 6378;
+		//var range = 50 / 6378;
 		
+		var sort = 'recent';  
+		
+		if( req.query.sort ) {
+			sort = req.query.sort;
+		}
+		
+		console.log('sort: ' + sort);
+
 		try  {
 			ThreadModel.find(
 				{  
@@ -26,33 +35,43 @@ exports.handleGet = function(req, res) {
 						$near : [parseFloat(req.query.lon), parseFloat(req.query.lat)], 
 						$maxDistance: range 
 					}  
-				},  ['posts']).execFind(  
+				},  ['name', 'posts']).execFind(   
 				function(err, docs) {
 					
 					if( !err ) {
 						
 						var elements = Array();
 						$.each(docs, function(docIndex, doc) {
-							elements = elements.concat(doc.posts);
+							
+							$.each(doc.posts, function(postIndex, post) {
+								
+								elements.push($.extend({place_name: doc.name},{ post: post }));
+							});
 						});
 						
 						
-						var qsort = function(a) {
+						var qsort = function(a, fn_compare) {
 						    if (a.length == 0) return [];
 						 
 						    var left = [], right = [], pivot = a[0];
 						 
 						    for (var i = 1; i < a.length; i++) {
-						       Date.parse(a[i].timestamp) > Date.parse(pivot.timestamp) ? left.push(a[i]) : right.push(a[i]);
+						    	if( sort == 'top-rated' ) {
+						    		var a_votes = a[i].post.upvotes - a[i].post.downvotes;
+						    		var p_votes = pivot.post.upvotes - pivot.post.downvotes;
+						    		
+						    		a_votes > p_votes ? left.push(a[i]) : right.push(a[i]);
+						    		
+						    	} else {
+						    		Date.parse(a[i].post.timestamp) > Date.parse(pivot.post.timestamp) ? left.push(a[i]) : right.push(a[i]);
+						    	}
 						    }
 						 
 						    return qsort(left).concat(pivot, qsort(right));
 						}
 						
-						//elements = qsort(elements);
-						
 						helper.sendJson(req, res, qsort(elements));
-
+						
 					} else {
 						helper.sendError(req, res, err);
 					}
@@ -66,7 +85,7 @@ exports.handleGet = function(req, res) {
 	} else if( req.params.command == 'closest_threads' ) { 
 		
 		// convert range to radian distance measurement
-		var range = parseFloat(req.query.range) / 1000 / 11.2;
+		var range = parseFloat(req.query.range) / 6378;
 		
 		console.log("finding distance: " + range);
 		
@@ -104,7 +123,7 @@ exports.handleGet = function(req, res) {
 		  var thread = new ThreadModel;
 		  $.extend(thread, req.query);
 		  
-		  var range = 25 / 1000 / 111.2;
+		  var range = 50 / 6378;
 		  
 		  try {
 			  
@@ -176,21 +195,17 @@ exports.handleGet = function(req, res) {
 									var post = new PostModel;
 									var thread = docs[0];
 									
-									console.log(post);
-									
 									$.extend(post, req.query);
 									
 									var timestamp = post._id.toString().substring(0,8)
 									var date = new Date( parseInt( timestamp, 16 ) * 1000 )
 									
 									post.timestamp = date;
-									
-									console.log(thread);
+									post.upvotes = 0;
+									post.downvotes = 0;
 									
 									thread.posts.push(post);
-	
-									console.log(thread);
-									 
+
 									thread.save(function(err) {
 							 			if( err ) {
 											helper.sendJson(req, res, { result: 'failed', error: err } );
