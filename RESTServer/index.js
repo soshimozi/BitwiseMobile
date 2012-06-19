@@ -14,19 +14,19 @@ var httpserver = server.create(
 		}
 	);
 
-var httpsserver = server.create(
-		{
-			use_ssl: true,
-			ssl_config: {
-				key : fs.readFileSync('/var/fixtures/keys/bitwise-key.pem'),
-				cert: fs.readFileSync('/var/fixtures/keys/bitwise-cert.pem')
-			},
-			session : { 
-				enabled: true, 
-				key: crypto.randomBytes(48).toString('hex') 
-			}
-		}
-	);
+//var httpsserver = server.create(
+//		{
+//			use_ssl: true,
+//			ssl_config: {
+//				key : fs.readFileSync('/var/fixtures/keys/bitwise-key.pem'),
+//				cert: fs.readFileSync('/var/fixtures/keys/bitwise-cert.pem')
+//			},
+//			session : { 
+//				enabled: true, 
+//				key: crypto.randomBytes(48).toString('hex') 
+//			}
+//		}
+//	);
 
 router.setRoutes(httpserver);
 //router.setRoutes(httpsserver);

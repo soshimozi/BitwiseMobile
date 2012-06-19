@@ -5,7 +5,7 @@ var helper = require('./request_helpers');
 var schemas = require('../schemas');
 
 var connection = mongoose.createConnection('mongodb://localhost/gisboard');
-var Model = connection.model('Threads', schemas.ThreadSchema);
+var Model = connection.model('Votes', schemas.ThreadSchema);
 
 exports.initialize = function() {
 };
@@ -46,12 +46,12 @@ exports.handleGet = function(req, res) {
 
 
 exports.handlePost = function(req, res) {
-	  var thread = Model.new();
+	  var vote = Model.new();
 	   
-	  $.extend(thread, req.body);
+	  $.extend(vote, req.body);
 	  
 	  try {
-		  thread.save(function(err) {
+		  vote.save(function(err) {
 			  
 			  if( err ) {
 				  helper.sendError(req, res, err);
