@@ -177,15 +177,8 @@ var getUserVoted = function(user_id, post_id, fn_callback) {
 			function(err, docs) {
 				
 				if( !err ) {
-					
-					//console.log(docs); 
-					
+
 					fn_callback(docs.length > 0 ? true : false);
-					
-					//console.log(docs.length);
-					
-					// if we found one, then return true
-					//return docs.length > 0 ? true : false;
 
 				} else {
 					console.log(err);
@@ -264,61 +257,85 @@ var handleAllPosts = function(req, res) {
 	// 
 	// get all post ids that user voted on, add to associated array
 	// extend each object by looking up post id, if in array then add true, otherwise add false
-	
-	try  {
-		//ThreadModel.find(
-		PostModel.find(
-			{  
-				loc : { 
-					$near : [parseFloat(req.query.lon), parseFloat(req.query.lat)], 
-					$maxDistance: range 
-				}  
-			}).execFind(   
-			function(err, docs) {
+	// first get all votes for a user
+	VoteModel.find(
+		{
+			user_id: req.query.device_id
+		}, 
+		function(err, docs) {
+			
+			if( !err ) {
 				
-				if( !err ) {
-					
-					var elements = Array();
-					$.each(docs, function(docIndex, doc) {
-						$.extend(doc, { voted: true });
-						elements.push(doc);
+				var uservotes = Array();
+				
+				// build map of user to post
+				$.each(docs, function(docIndex, doc) {
+					console.log(doc);
+					uservotes[doc.post_id] = doc; 
+				});
+				
+				PostModel.find(
+					{  
+						loc : { 
+							$near : [parseFloat(req.query.lon), parseFloat(req.query.lat)], 
+							$maxDistance: range 
+						}  
+					}).execFind(   
+					function(err, docs) {
+						
+						if( !err ) {
+							
+							var elements = Array();
+							$.each(docs, function(docIndex, doc) {
+
+								console.log(doc);
+								
+								var voted = doc._id in uservotes;
+
+								var newDoc = {
+									post: doc,
+									voted: voted
+								};
+								
+								elements.push(newDoc);
+							});
+							
+							
+							var qsort = function(a, fn_compare) {
+							    if (a.length == 0) return [];
+							 
+							    var left = [], right = [], pivot = a[0];
+							 
+							    for (var i = 1; i < a.length; i++) {
+							    	if( sort == 'top-rated' ) {
+
+							    		var a_votes = a[i].post.upvotes - a[i].post.downvotes;
+							    		var p_votes = pivot.post.upvotes - pivot.post.downvotes;
+							    		
+							    		a_votes > p_votes ? left.push(a[i]) : right.push(a[i]);
+							    		
+							    	} else {
+							    		Date.parse(a[i].post.timestamp) > Date.parse(pivot.post.timestamp) ? left.push(a[i]) : right.push(a[i]);
+							    	}
+							    }
+							 
+							    return qsort(left).concat(pivot, qsort(right));
+							}
+							
+							helper.sendJson(req, res, qsort(elements));
+							
+						} else {
+							helper.sendError(req, res, err);
+						}
 					});
-					
-					
-					var qsort = function(a, fn_compare) {
-					    if (a.length == 0) return [];
-					 
-					    var left = [], right = [], pivot = a[0];
-					 
-					    for (var i = 1; i < a.length; i++) {
-					    	if( sort == 'top-rated' ) {
-					    		//var a_votes = a[i].post.upvotes - a[i].post.downvotes;
-					    		//var p_votes = pivot.post.upvotes - pivot.post.downvotes;
-					    		var a_votes = a[i].upvotes - a[i].downvotes;
-					    		var p_votes = pivot.upvotes - pivot.downvotes;
-					    		
-					    		a_votes > p_votes ? left.push(a[i]) : right.push(a[i]);
-					    		
-					    	} else {
-					    		//Date.parse(a[i].post.timestamp) > Date.parse(pivot.post.timestamp) ? left.push(a[i]) : right.push(a[i]);
-					    		Date.parse(a[i].timestamp) > Date.parse(pivot.timestamp) ? left.push(a[i]) : right.push(a[i]);
-					    	}
-					    }
-					 
-					    return qsort(left).concat(pivot, qsort(right));
-					}
-					
-					helper.sendJson(req, res, qsort(elements));
-					
-				} else {
-					helper.sendError(req, res, err);
-				}
-			});
-	}
-	catch(ex) {
-		console.log(ex);
-		helper.sendError(req, res, ex);
-	}
+				
+				
+			} else {
+				helper.sendError(req, res, err);
+			}
+		}
+	);
+	
 }
 
 var handleVoteDown = function(req, res) {
@@ -473,6 +490,8 @@ exports.initialize = function() {
 
 exports.handleGet = function(req, res) {
 
+	console.log(req.query);
+	
 	var methods = {};
 	
 	methods['all_posts'] = handleAllPosts;
@@ -488,24 +507,6 @@ exports.handleGet = function(req, res) {
 	} else {
 		res.send('Not found: ' + req.params.command, {'Content-Type' : 'text/html'}, 404);
 	}
-	
-//	if( req.params.command == 'all_posts' ) {   
-//		
-//		
-//	} else if (req.params.command == 'vote_up') {
-//
-//
-//		
-//	} else if( req.params.command == 'closest_threads' ) { 
-//		
-//		
-//	} else if (req.params.command == 'add_thread' ) {
-//		
-//		  
-//	} else if (req.params.command == 'add_post' ) {
-//	} else {
-//		res.send('Not found: ' + req.params.command, {'Content-Type' : 'text/html'}, 404);
-//	}
 }
 
 exports.handlePost = function(req, res) {

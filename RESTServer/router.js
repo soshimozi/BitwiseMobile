@@ -17,10 +17,6 @@ function setRoutes(app) {
 	app.get('/threads/:id/:behavior', thread_controller.handleBehavior);
 	app.post('/threads/:id?', thread_controller.handlePost);
 	
-	app.get('/votes/:id?', vote_controller.handleGet);
-	app.get('/votes/:id/:behavior', vote_controller.handleBehavior);
-	app.post('/votes/:id?', vote_controller.handlePost);
-	
 	app.get('/:command', api_controller.handleGet);
 }
 

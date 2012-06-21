@@ -55,10 +55,8 @@ exports.handlePost = function(req, res) {
 			  
 			  if( err ) {
 				  helper.sendError(req, res, err);
-				  //res.send('Server Error', {'Content-Type' : 'text/html'}, 500);
 			  } else {
-				  //helper.sendJson(req, res, thread, 201);
-				  res.send('<div>Success!</div>');
+				  helper.sendJson(req, res, { result: 'success', data: thread } );
 			  }
 		  });	
 	  }
